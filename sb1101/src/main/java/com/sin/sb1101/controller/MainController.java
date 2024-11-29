@@ -32,7 +32,7 @@ public class MainController {
             model.addAttribute("user", sign);  // 세션에 사용자 정보가 있으면 모델에 담기
             model.addAttribute("role", sign.getRole());
         }
-        return "main";
+        return "/main";
     }
  @GetMapping("/main")
     public String main(Model model) {

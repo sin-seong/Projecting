@@ -1,0 +1,35 @@
+/* gamePage.css */
+
+body {
+    background-color: #f8f9fa; /* 배경색 */
+    font-family: Arial, sans-serif; /* 폰트 설정 */
+}
+
+header {
+    border-bottom: 2px solid #000; /* 헤더 아래 경계선 */
+}
+
+.logo {
+    max-width: 150px; /* 로고 최대 너비 설정 */
+}
+
+.nav-link {
+    color: #fff; /* 내비게이션 링크 색상 */
+}
+
+.nav-link:hover {
+    color: #ddd; /* 호버 시 색상 변경 */
+}
+
+.card {
+    border: none; /* 카드 경계선 없애기 */
+}
+
+footer {
+    background-color: #000; /* 푸터 배경색 */
+    color: #fff; /* 푸터 글자색 */
+    padding: 10px 0; /* 푸터 패딩 */
+}
+.custom-container {
+    background-color: #000000; /* 원하는 색상으로 변경 */
+}

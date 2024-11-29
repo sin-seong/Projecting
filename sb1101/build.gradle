@@ -1,0 +1,60 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.16'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'java'
+}
+
+group = 'org.zerock' // 필요에 따라 그룹 ID 변경 가능
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    implementation 'javax.servlet:jstl'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.0'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.h2database:h2'
+    implementation 'org.springframework.security:spring-security-crypto'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Thymeleaf Layout Dialect 추가
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.0.0'
+    // Java 8 시간 지원
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
+
+    implementation 'org.springframework.security:spring-security-crypto:5.8.0'
+
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.1.2'
+
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.15.3'
+
+    implementation 'com.opencsv:opencsv:5.6'
+
+    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.8.3'
+
+    implementation 'io.github.bonigarcia:webdrivermanager:5.3.0'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

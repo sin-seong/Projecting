@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 상세 화면</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  <style>
+    html, body {
+      height: 100%;  /* 페이지 높이를 100%로 설정 */
+      overflow-y: auto;  /* 페이지에 세로 스크롤이 생기도록 설정 */
+    }
+    body {
+      background: url('/images/fnotice_image4.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      font-family: Arial, sans-serif;
+      position: relative;
+      overflow: auto; /* 페이지에 스크롤이 생기도록 설정 */
+    }
+    .table{
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+    .btn{
+      color:white;
+    }
+    /* 별이 빛나는 효과 */
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 0; /* 별이 페이지의 배경으로 보이게 설정 */
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background-color: white;
+      border-radius: 50%;
+      animation: twinkle 1.5s infinite ease-in-out;
+    }
+
+    /* 별들이 반짝이는 애니메이션 */
+    @keyframes twinkle {
+      0% {
+        opacity: 0.4;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.4;
+      }
+    }
+
+    /* 별을 무작위 위치에 배치 */
+    .star:nth-child(odd) {
+      animation-duration: 2s;
+    }
+    .star:nth-child(even) {
+      animation-duration: 1.5s;
+    }
+
+    /* 테이블 스타일 */
+    .table {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .btn {
+      color: black;
+      background-color:white; ;
+    }
+    textarea {
+      width: 100%;
+      height: 100%;   /* 부모 요소의 100% 높이로 설정 */
+      box-sizing: border-box;
+      font-size: 20px;
+      overflow-y: auto;   /* 세로 스크롤바 추가 */
+    }
+    .input-group {
+      display: flex; /* 텍스트 영역과 버튼을 가로로 나열 */
+      width: 100%;
+      align-items: center;
+    }
+
+    textarea.form-control {
+      width: calc(100% - 110px); /* 버튼 크기만큼 제외한 너비로 설정 */
+      height: auto;b
+    }
+    .form-group {
+      margin-bottom: 20px; /* 댓글 입력 폼과 버튼 간 간격을 주기 위한 마진 */
+    }
+    #commentBtn {
+      width: 100%; /* 버튼을 텍스트 영역과 같은 크기로 설정 */
+      margin-top: 10px; /* 텍스트 영역과 버튼 간 간격 설정 */
+    }
+
+    button.btn-primary {
+      width: 120px;
+      height: 120px;
+    }
+    /* 댓글 입력 폼 스타일 */
+    .input-group {
+      position: relative;
+    }
+
+    textarea.form-control {
+      width: calc(100% - 120px); /* 버튼 크기를 제외한 공간만큼 넓히기 */
+      height: auto;  /* 자동 높이 조정 */
+    }
+
+
+    comment-btn-container {
+      margin-top: 10px; /* 텍스트 영역과 버튼 사이의 간격 */
+      display: flex;
+      justify-content: flex-end; /* 버튼을 오른쪽에 배치 */
+    }
+    .button-group {
+       display: flex;
+       gap: 10px;
+       align-items: center;
+     }
+
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+
+
+  </style>
+</head>
+<body>
+<!-- 별이 빛나는 배경 효과 -->
+<div class="stars">
+  <!-- 30개의 별을 랜덤 위치로 배치 -->
+  <div class="star" style="top: 5%; left: 12%;"></div>
+  <div class="star" style="top: 8%; left: 28%;"></div>
+  <div class="star" style="top: 12%; left: 35%;"></div>
+  <div class="star" style="top: 15%; left: 60%;"></div>
+  <div class="star" style="top: 18%; left: 75%;"></div>
+  <div class="star" style="top: 20%; left: 85%;"></div>
+  <div class="star" style="top: 25%; left: 10%;"></div>
+  <div class="star" style="top: 30%; left: 40%;"></div>
+  <div class="star" style="top: 35%; left: 50%;"></div>
+  <div class="star" style="top: 40%; left: 5%;"></div>
+  <div class="star" style="top: 45%; left: 60%;"></div>
+  <div class="star" style="top: 50%; left: 30%;"></div>
+  <div class="star" style="top: 55%; left: 70%;"></div>
+  <div class="star" style="top: 60%; left: 80%;"></div>
+  <div class="star" style="top: 65%; left: 15%;"></div>
+  <div class="star" style="top: 70%; left: 90%;"></div>
+  <div class="star" style="top: 75%; left: 25%;"></div>
+  <div class="star" style="top: 80%; left: 50%;"></div>
+  <div class="star" style="top: 85%; left: 65%;"></div>
+  <div class="star" style="top: 90%; left: 20%;"></div>
+  <div class="star" style="top: 92%; left: 45%;"></div>
+  <div class="star" style="top: 95%; left: 80%;"></div>
+  <div class="star" style="top: 2%; left: 95%;"></div>
+  <div class="star" style="top: 7%; left: 50%;"></div>
+  <div class="star" style="top: 13%; left: 60%;"></div>
+  <div class="star" style="top: 18%; left: 10%;"></div>
+  <div class="star" style="top: 23%; left: 80%;"></div>
+  <div class="star" style="top: 28%; left: 33%;"></div>
+</div>
+<div th:replace="layout/header :: header"></div>
+<div class="container">
+  <h2>게시글 상세 화면</h2>
+  <form id="frm" method="post">
+    <table class="table">
+      <colgroup>
+        <col width="15%"/>
+        <col width="35%"/>
+        <col width="15%"/>
+        <col width="35%"/>
+      </colgroup>
+
+      <tbody>
+      <tr>
+        <th scope="row">글 번호</th>
+        <td th:text="${fnotice.id}"></td>
+        <th scope="row">조회수</th>
+        <td th:text="${fnotice.hitCnt}"></td>
+      </tr>
+      <tr>
+        <th scope="row">작성자</th>
+        <td th:text="${fnotice.username}"></td>
+        <th scope="row">작성일</th>
+        <td th:text="${formattedDate}"></td>
+      </tr>
+      <tr>
+        <th scope="row">소속</th>
+        <td th:text="${fnotice.department}"></td>
+        <th scope="row">제목</th>
+        <td th:text="${fnotice.title}"></td>
+      </tr>
+      <tr>
+        <th scope="row" style="text-align: center; vertical-align: middle;">내용</th>
+        <td colspan="3" class="view_text" th:text="${fnotice.content}"
+            style="text-align: left; padding: 20px;"></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="button-group" style="margin-bottom: 20px;">
+      <a href="/fnotice" id="list" class="btn">목록으로</a>
+      <!-- 수정 버튼 -->
+      <a th:if="${username != null and (username.equals(fnotice.username) or role.equals('admin'))}"
+         th:href="@{/fnotice/{id}/edit(id=${fnotice.id})}"
+         class="btn btn-primary">수정하기</a>
+
+      <!-- 삭제 버튼을 form 대신 링크로 변경 -->
+      <a th:if="${username != null and (username.equals(fnotice.username) or role.equals('admin'))}"
+         th:href="@{/fnotice/delete/{id}(id=${fnotice.id})}"
+         class="btn btn-danger"
+         onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</a>
+    </div>
+    <div>
+      <h3 style="margin-top: 20px;">댓글</h3>
+
+      <!-- 댓글 입력 폼 -->
+
+      <form th:action="@{'/fnotice/' + ${fnotice.id} + '/comment'}" method="post">
+        <div class="form-group">
+          <div class="input-group" style="display: flex; width: 100%; align-items: stretch;">
+            <!-- 텍스트 영역 -->
+            <textarea id="commentContent" name="content" class="form-control" rows="3" required style="flex: 1; height: 100%;"></textarea>
+            <!-- 댓글 작성 버튼 -->
+            <button type="submit" class="btn btn-primary" id="commentBtn" style="height: 70px; width: 120px;">댓글 추가</button>
+          </div>
+            <!-- 댓글 작성 버튼 -->
+            <div th:each="comments: ${comments}" class="come" th:data-id="${fnotice_id}"></div>
+          </div>
+        </div>
+         <!-- 버튼을 form 밖으로 이동 -->
+        <input type="hidden" name="username" value="${username}" />
+      </form>
+
+
+      <div th:each="comment : ${comments}">
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title d-flex justify-content-between">
+              <span class="comment-author text-dark" th:text="${comment.username}"></span>
+              <small class="text-muted" th:text="${comment.createdAt.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd HH:mm'))}"></small>
+            </h5>
+            <p class="card-text comment-content text-dark" th:text="${comment.content}"></p>
+
+            <!-- 댓글 삭제 버튼, 유저네임이 같거나 role이 'admin'인 경우에만 버튼 표시 -->
+            <!-- 댓글 삭제 버튼 -->
+            <div th:if="${username != null and (username == comment.username or role == 'admin')}"
+                 style="text-align: right;">
+              <form th:action="@{/fnotice/{fnoticeId}/comment/{commentId}/delete(fnoticeId=${fnotice.id}, commentId=${comment.id})}"
+                    method="post"
+                    style="display: inline;">
+                <button type="submit" class="btn btn-danger btn-sm"
+                        onclick="return confirm('댓글을 삭제하시겠습니까?');">삭제</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    let isLoggedIn = [[${username != null}]]; // 로그인 여부 확인
+
+    // 로그인하지 않았을 경우 댓글 버튼 비활성화 및 클릭 시 로그인 경고
+    if (!isLoggedIn) {
+      $("#commentBtn").prop("disabled", true);
+      $("#commentContent").on("click", function () {
+        alert("로그인이 필요합니다. 로그인 후 댓글을 작성해주세요.");
+      });
+    }
+
+    // 댓글 폼 제출
+    // 댓글 입력 폼 제출
+    $("#commentForm").on("submit", function(event) {
+      var content = $("#commentContent").val();
+      if (!content.trim()) {
+        event.preventDefault();
+        alert("댓글 내용을 입력해주세요.");
+        return false;
+      }
+    });
+
+    // 엔터키 처리
+    $('#commentContent').on('keypress', function(event) {
+      if (event.keyCode === 13 && !event.shiftKey) {
+        event.preventDefault();
+        var form = $(this).closest("form");
+        if ($(this).val().trim()) {  // 내용이 있을 때만 제출
+          form.submit();
+          setTimeout(function() {
+            $("#commentContent").val('').focus();  // 텍스트 영역 초기화 및 포커스
+          }, 100);
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>

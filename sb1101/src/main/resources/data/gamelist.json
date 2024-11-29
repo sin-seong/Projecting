@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "title": "게임 제목 1",
+    "description": "이 게임은 훌륭한 스토리를 가지고 있습니다.",
+    "imageUrl": "/images/game1.jpg",
+    "releaseDate": "2024-01-01"
+  },
+  {
+    "id": 2,
+    "title": "게임 제목 2",
+    "description": "이 게임은 흥미진진한 액션을 제공합니다.",
+    "imageUrl": "/images/game2.jpg",
+    "releaseDate": "2024-02-15"
+  },
+  {
+    "id": 3,
+    "title": "게임 제목 3",
+    "description": "이 게임은 다양한 캐릭터를 선택할 수 있습니다.",
+    "imageUrl": "/images/game3.jpg",
+    "releaseDate": "2024-03-30"
+  }
+]

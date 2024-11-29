@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 수정 화면</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  <style>
+    /* 기존 스타일을 그대로 유지 */
+    html, body {
+      height: 100%;  /* 페이지 높이를 100%로 설정 */
+      overflow-y: auto;  /* 페이지에 세로 스크롤이 생기도록 설정 */
+    }
+    body {
+      background: url('/images/fnotice_image4.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      font-family: Arial, sans-serif;
+      position: relative;
+      overflow: auto; /* 페이지에 스크롤이 생기도록 설정 */
+    }
+    .table{
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+    .btn{
+      color:white;
+    }
+    /* 테이블 스타일 */
+    .table {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* 댓글 입력 폼 스타일 */
+    .input-group {
+      display: flex; /* 텍스트 영역과 버튼을 가로로 나열 */
+      width: 100%;
+      align-items: center;
+    }
+
+    textarea.form-control {
+      width: calc(100% - 120px); /* 버튼 크기를 제외한 공간만큼 넓히기 */
+      height: auto;  /* 자동 높이 조정 */
+    }
+    .form-control {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid #ddd;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 20px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      border: none;
+    }
+
+    textarea.form-control {
+      min-height: 200px;
+      resize: vertical;
+    }
+    input[readonly] {
+      background-color: rgba(255, 255, 255, 0.7) !important;
+      cursor: not-allowed;
+    }
+
+
+  </style>
+</head>
+<body>
+<!-- 별이 빛나는 배경 효과 -->
+<div class="stars">
+  <!-- 30개의 별을 랜덤 위치로 배치 -->
+  <div class="star" style="top: 5%; left: 12%;"></div>
+  <div class="star" style="top: 8%; left: 28%;"></div>
+  <div class="star" style="top: 12%; left: 35%;"></div>
+  <div class="star" style="top: 15%; left: 60%;"></div>
+  <div class="star" style="top: 18%; left: 75%;"></div>
+  <div class="star" style="top: 20%; left: 85%;"></div>
+  <div class="star" style="top: 25%; left: 10%;"></div>
+  <div class="star" style="top: 30%; left: 40%;"></div>
+  <div class="star" style="top: 35%; left: 50%;"></div>
+  <div class="star" style="top: 40%; left: 5%;"></div>
+  <div class="star" style="top: 45%; left: 60%;"></div>
+  <div class="star" style="top: 50%; left: 30%;"></div>
+  <div class="star" style="top: 55%; left: 70%;"></div>
+  <div class="star" style="top: 60%; left: 80%;"></div>
+  <div class="star" style="top: 65%; left: 15%;"></div>
+  <div class="star" style="top: 70%; left: 90%;"></div>
+  <div class="star" style="top: 75%; left: 25%;"></div>
+  <div class="star" style="top: 80%; left: 50%;"></div>
+  <div class="star" style="top: 85%; left: 65%;"></div>
+  <div class="star" style="top: 90%; left: 20%;"></div>
+  <div class="star" style="top: 92%; left: 45%;"></div>
+  <div class="star" style="top: 95%; left: 80%;"></div>
+  <div class="star" style="top: 2%; left: 95%;"></div>
+  <div class="star" style="top: 7%; left: 50%;"></div>
+  <div class="star" style="top: 13%; left: 60%;"></div>
+  <div class="star" style="top: 18%; left: 10%;"></div>
+  <div class="star" style="top: 23%; left: 80%;"></div>
+  <div class="star" style="top: 28%; left: 33%;"></div>
+</div>
+
+<div th:replace="layout/header :: header"></div>
+<div class="container">
+  <h2>게시글 수정 화면</h2>
+
+  <form id="frm" th:action="@{/fnotice/{id}/edit(id=${fnotice.id})}" method="post">
+    <table class="table">
+      <colgroup>
+        <col width="15%"/>
+        <col width="35%"/>
+        <col width="15%"/>
+        <col width="35%"/>
+      </colgroup>
+
+      <tbody>
+      <tr>
+        <th scope="row">글 번호</th>
+        <td th:text="${fnotice.id}" readonly></td>
+        <th scope="row">조회수</th>
+        <td th:text="${fnotice.hitCnt}" readonly></td>
+      </tr>
+      <tr>
+        <th scope="row">작성자</th>
+        <td th:text="${fnotice.username}" readonly></td>
+        <th scope="row">작성일</th>
+        <td th:text="${formattedDate}" readonly></td>
+      </tr>
+
+      <tr>
+        <th scope="row">제목</th>
+        <td colspan="3">
+          <input type="text" name="title" th:value="${fnotice.title}" class="form-control" required/>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">소속</th>
+        <td colspan="3">
+          <!-- 소속을 읽기 전용 텍스트로 표시 -->
+          <input type="text" class="form-control" th:value="${fnotice.department}" readonly />
+          <!-- 원래 값을 hidden 필드로 유지 -->
+          <input type="hidden" name="department" th:value="${fnotice.department}" />
+        </td>
+      </tr>
+      <tr>
+        <th scope="row" style="text-align: center; vertical-align: middle; width: 15%;">내용</th>
+        <td colspan="4">
+          <textarea name="content" class="form-control" rows="5" required th:text="${fnotice.content}"></textarea>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- 수정 버튼 -->
+    <button type="submit" class="btn btn-primary">수정 완료</button>
+    <a href="/fnotice" class="btn btn-secondary">목록으로</a>
+  </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // 폼 제출 전 유효성 검사
+    $('#frm').on('submit', function(e) {
+
+      if (!$('input[name="title"]').val().trim()) {
+        alert('제목을 입력해주세요.');
+        e.preventDefault();
+        return false;
+      }
+
+      if (!$('textarea[name="content"]').val().trim()) {
+        alert('내용을 입력해주세요.');
+        e.preventDefault();
+        return false;
+      }
+
+      return confirm('게시글을 수정하시겠습니까?');
+    });
+  });
+</script>
+
+</body>
+</html>

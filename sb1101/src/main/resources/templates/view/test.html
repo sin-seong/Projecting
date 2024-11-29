@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>2D 폼플랫머 게임</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: url('/images/from_game.jpg') no-repeat center center fixed;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    canvas {
+      display: block;
+      margin: 0 auto;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+      background-color: #008CBA;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    button:hover {
+      background-color: #005f73;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Thymeleaf로 header를 삽입 -->
+<div th:replace="layout/header :: header"></div>
+
+<!-- 게임 캔버스와 시작 버튼 -->
+<canvas id="gameCanvas"></canvas>
+<button id="startButton">게임 시작</button>
+<button id="rankButton">순위 보기</button>
+
+<script>
+  // 게임 초기 설정
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const startButton = document.getElementById('startButton');
+
+  canvas.width = 800; // 캔버스 너비
+  canvas.height = 600; // 캔버스 높이
+
+  // 게임 요소
+  const playerWidth = 50;
+  const playerHeight = 50;
+  let playerX = 100;
+  let playerY = canvas.height - 50 - 20; // 처음 캐릭터 위치를 바닥에 정확히 맞추기 위해 수정
+  let playerSpeed = 5;
+  let gravity = 0.5;
+  let velocityY = 0;
+  let isJumping = false;
+  let canDoubleJump = true;  // 더블 점프 가능 여부
+  let isLanding = false;
+  let score = 0;              // 점수 변수
+  let life = 3;               // 초기 라이프 설정, 최대 3
+
+  // 발판
+  let platforms = [
+    { x: 0, y: canvas.height - 50, width: canvas.width, height: 20, isGround: true }, // 바닥
+  ];
+
+  // 아이템
+  let items = [];
+
+  // 키 입력
+  let leftPressed = false;
+  let rightPressed = false;
+  let spacePressed = false;
+  let shiftPressed = false;  // 대쉬 활성화 키 (Shift)
+
+  // 게임 시작 여부
+  let gameStarted = false;
+
+  // 대쉬 변수
+  let dashSpeed = 10;
+  let normalSpeed = 5;
+  let dashDuration = 0;
+
+  // 플랫폼과 아이템 생성 함수
+  function generatePlatforms() {
+    for (let i = 0; i < 5; i++) {
+      let x = Math.random() * (canvas.width - 100); // 랜덤 x
+      let y = Math.random() * (canvas.height - 100); // 랜덤 y
+      y = Math.max(100, y); // 최소 y 위치를 100 이상으로 설정 (바닥과 너무 가까운 위치 방지)
+      platforms.push({ x, y, width: 150, height: 20, isGround: false });
+    }
+  }
+
+  // 아이템 생성
+  function generateItem() {
+    let x = Math.random() * (canvas.width - 50);
+    let y = 0; // 위에서 떨어지도록 y를 0으로 설정
+    let type = Math.random() < 0.01 ? 'health' : 'damage'; // 라이프 아이템 확률 1%, 데미지 아이템 99%
+    items.push({ x, y, width: 20, height: 20, type });
+  }
+
+  // 키 이벤트 리스너
+  window.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowLeft') leftPressed = true;
+    if (event.key === 'ArrowRight') rightPressed = true;
+
+    // 스페이스바로 점프 시작
+    if (event.key === ' ' && !spacePressed && !isJumping) {
+      spacePressed = true;  // 스페이스바가 눌렸을 때 점프를 시작
+    }
+
+    if (event.key === 'Shift') {
+      shiftPressed = true;  // Shift 키로 대쉬
+    }
+  });
+
+  window.addEventListener('keyup', function(event) {
+    if (event.key === 'ArrowLeft') leftPressed = false;
+    if (event.key === 'ArrowRight') rightPressed = false;
+    if (event.key === ' ') spacePressed = false;  // 스페이스바를 떼면 점프 상태 종료
+    if (event.key === 'Shift') shiftPressed = false;
+  });
+
+  // 충돌 감지 함수
+  function checkCollision(platform) {
+    if (playerX < platform.x + platform.width &&
+            playerX + playerWidth > platform.x &&
+            playerY + playerHeight <= platform.y + 10 && // 발판에 닿았을 때만 올라가게
+            velocityY >= 0) {
+      playerY = platform.y - playerHeight;  // 발판 위로 올라가기
+      velocityY = 0;
+      isJumping = false;
+      isLanding = true;
+      canDoubleJump = true;  // 더블 점프 가능
+    }
+  }
+
+  // 아이템 충돌 처리
+  function checkItemCollision() {
+    items.forEach((item, index) => {
+      if (playerX < item.x + item.width &&
+              playerX + playerWidth > item.x &&
+              playerY < item.y + item.height &&
+              playerY + playerHeight > item.y) {
+        if (item.type === 'damage') {
+          life -= 1; // 아이템이 'damage'일 경우 라이프 감소
+        } else if (item.type === 'health') {
+          if (life < 3) {  // 라이프 최대치 3으로 제한
+            life += 1; // 아이템이 'health'일 경우 라이프 회복
+          }
+        }
+        items.splice(index, 1); // 아이템 먹으면 삭제
+      }
+    });
+  }
+
+  // 게임 업데이트 함수
+  function updateGame() {
+    if (!gameStarted) return;
+
+    let speed = shiftPressed && dashDuration === 0 ? dashSpeed : normalSpeed; // 대쉬 중일 때 speed 증가
+    if (leftPressed) {
+      playerX -= speed;
+    }
+    if (rightPressed) {
+      playerX += speed;
+    }
+
+    // 점프 처리
+    if (spacePressed && !isJumping) {
+      velocityY = -12;  // 위로 점프하는 힘 (초기 속도)
+      isJumping = true;
+      canDoubleJump = true;
+    } else if (spacePressed && canDoubleJump && !isJumping && !isLanding) {
+      velocityY = -12;  // 더블 점프
+      canDoubleJump = false;
+    }
+
+    // 중력 처리 (점프가 끝난 후, 중력만 가해짐)
+    if (isJumping) {
+      velocityY += gravity; // 중력의 영향이 점프 후에만 증가하도록 설정
+    }
+
+    playerY += velocityY;
+
+    // 바닥에 닿으면 떨어지지 않도록
+    if (playerY >= canvas.height - 50 - playerHeight) {
+      playerY = canvas.height - 50 - playerHeight;
+      velocityY = 0;  // 땅에 닿으면 속도 초기화
+      isJumping = false;
+      isLanding = true;
+      canDoubleJump = true;  // 땅에 닿으면 더블 점프 가능
+    }
+
+    // 충돌 감지
+    platforms.forEach(checkCollision);
+    checkItemCollision();  // 아이템 충돌 체크
+
+    // 아이템 떨어지기
+    items.forEach(item => item.y += itemFallSpeed); // 아이템이 아래로 떨어지도록 설정
+
+    // 아이템이 바닥에 닿으면 제거
+    items = items.filter(item => item.y < canvas.height);
+
+    // 화면 밖으로 나가지 않도록 처리
+    if (playerX < 0) playerX = 0;
+    if (playerX + playerWidth > canvas.width) playerX = canvas.width - playerWidth;
+
+    // 게임 오버 체크
+    if (life <= 0) {
+      gameStarted = false; // 게임 종료
+      alert('게임 오버! 점수: ' + score);
+      resetItemFallSpeed(); // 게임 오버 시 속도 초기화
+    }
+  }
+
+  // 게임 화면 그리기
+  function drawGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);  // 화면 지우기
+
+    // 발판 그리기
+    ctx.fillStyle = '#654321';  // 갈색 플랫폼
+    platforms.forEach(platform => ctx.fillRect(platform.x, platform.y, platform.width, platform.height));
+
+    // 플레이어 그리기
+    ctx.fillStyle = '#00F';  // 파란색
+    ctx.fillRect(playerX, playerY, playerWidth, playerHeight);
+
+    // 아이템 그리기
+    items.forEach(item => {
+      ctx.fillStyle = item.type === 'health' ? 'green' : 'red'; // 'health'는 초록색, 'damage'는 빨간색
+      ctx.fillRect(item.x, item.y, item.width, item.height);
+    });
+
+    // 점수와 라이프 표시
+    ctx.fillStyle = 'white';  // 점수는 흰색
+    ctx.font = '20px Arial';
+    ctx.fillText('점수: ' + score, 10, 30);  // 점수 표시
+
+    ctx.fillStyle = 'red';  // 라이프는 빨간색
+    ctx.fillText('라이프: ' + life, canvas.width - 100, 30);  // 라이프 표시
+  }
+
+  let lastSpeedIncreaseTime = 0;
+  const scoreInterval = 1000;
+  let itemFallSpeed = 2; // 초기 아이템 떨어지는 속도
+
+  // 아이템 속도 증가
+  function increaseItemSpeed(timestamp) {
+    if (timestamp - lastSpeedIncreaseTime >= 3000) {  // 3초마다
+      itemFallSpeed *= 1.3;  // 아이템 속도를 10% 증가시킴
+      lastSpeedIncreaseTime = timestamp; // 마지막 속도 증가 시간 갱신
+    }
+  }
+
+  // 아이템 속도 초기화
+  function resetItemFallSpeed() {
+    itemFallSpeed = 2;  // 게임 오버 시 아이템 속도 초기화
+  }
+
+  // 게임 루프
+  function gameLoop(timestamp) {
+    if (gameStarted) {
+      updateGame();
+      drawGame();
+      increaseItemSpeed(timestamp); // 아이템 속도 증가 함수 호출
+      score += 10; // 일정 시간마다 점수 증가
+    }
+    requestAnimationFrame(gameLoop);
+  }
+
+  // 게임 시작 함수
+  function startGame() {
+    if (gameStarted) return;
+
+    gameStarted = true;
+    score = 0;
+    life = 3;
+    platforms = [{ x: 0, y: canvas.height - 50, width: canvas.width, height: 20 }];
+    items = [];
+    resetItemFallSpeed(); // 게임 시작 시 속도 초기화
+
+    generatePlatforms();
+    setInterval(generateItem, 300);  // 1초마다 아이템 생성
+    gameLoop();
+  }
+
+  // 시작 버튼 클릭 이벤트
+  startButton.addEventListener('click', startGame);
+
+  // 게임 오버 시 점수 저장
+  function gameOver() {
+    gameStarted = false;
+    alert('게임 오버! 점수: ' + score);
+
+    fetch('/saveScore', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ score: score })  // 점수를 서버로 전송
+    })
+            .then(response => response.json())
+            .then(data => console.log('점수 저장 성공', data))
+            .catch(error => console.error('점수 저장 오류:', error));
+
+    // 순위 보기 버튼이 이미 추가되어 있는지 확인
+    if (!document.querySelector('#rankButton')) {
+      // 순위 보기 버튼 생성
+      const rankButton = document.createElement('button');
+      rankButton.textContent = '순위 보기';
+      rankButton.id = 'rankButton';  // id를 추가하여 중복 생성을 방지
+      rankButton.style.padding = '10px 20px';
+      rankButton.style.fontSize = '16px';
+      rankButton.style.marginTop = '20px';
+      rankButton.style.cursor = 'pointer';
+      rankButton.style.backgroundColor = '#008CBA';
+      rankButton.style.color = 'white';
+      rankButton.style.border = 'none';
+      rankButton.style.borderRadius = '5px';
+      rankButton.style.position = 'absolute';  // 화면에서 중앙에 위치하도록 설정
+      rankButton.style.left = '50%';
+      rankButton.style.top = '50%';
+      rankButton.style.transform = 'translate(-50%, -50%)';  // 화면 중앙에 배치
+
+      // 버튼 클릭 시 순위 페이지로 이동
+      rankButton.addEventListener('click', function() {
+        window.location.href = '/game';  // 순위 보기 페이지로 이동
+      });
+
+      // 버튼을 body에 추가
+      document.body.appendChild(rankButton);
+    }
+  }
+
+</script>
+</body>
+</html>

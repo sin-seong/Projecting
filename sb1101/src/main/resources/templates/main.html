@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>게임 사이트</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+  <link rel="stylesheet" th:href="@{/css/mainPage.css}">
+  <style>
+
+  </style>
+</head>
+<body>
+
+<!-- 헤더 포함 -->
+<div th:replace="layout/header :: header"></div>
+
+
+<!-- 메인 콘텐츠 -->
+<div class="container">
+  <!-- 메인 이미지 -->
+  <div class="main-image-container">
+    <img alt="게임 사이트 이미지" src="/images/main_game_image4.jpg" class="main-image">
+  </div>
+
+  <!-- 메인 콘텐츠 -->
+  <div class="main-content">
+    <!-- 공지사항과 게시판 -->
+    <div class="content-wrapper">
+      <!-- 공지사항 -->
+      <div class="game-notices">
+        <h3><a href="/notices">공지사항</a></h3>
+        <div class="notice-list">
+          <table>
+            <tr th:each="notice, iterStat : ${noticeList}" th:if="${iterStat.index < 4}">
+              <td class="tag-cell n-text" th:text="${notice.category}"></td>
+              <td class="title-cell">
+                <a th:href="@{/notice/read(id=${notice.id})}" th:text="${notice.title}"></a>
+              </td>
+              <td class="date-cell n-text" th:text="${#temporals.format(notice.date, 'yyyy-MM-dd')}"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- 게시판 -->
+      <div class="game-events">
+        <h3><a href="/fnotice">게시판</a></h3>
+        <table class="board-table">
+          <tr th:each="fnotice, iterStat : ${fnoticeList}" th:if="${iterStat.index < 4}">
+            <td class="tag-cell">
+              <span class="badge bg-secondary">[일반]</span>
+            </td>
+            <td class="title-cell">
+              <a th:href="@{/fnotice/{id}(id=${fnotice.id})}" th:text="${fnotice.title}"></a>
+            </td>
+            <td class="date-cell n-text" th:text="${#temporals.format(fnotice.createdAt, 'yyyy-MM-dd')}"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 로그인/프로필 영역 -->
+    <div class="btn-container">
+      <div th:if="${user == null}" class="login-section">
+        <h4 class="mb-4">로그인</h4>
+        <a href="/login">
+          <button class="btn-custom login-btn">로그인</button>
+        </a>
+        <a href="/signup">
+          <button class="btn-custom signup-btn">회원가입</button>
+        </a>
+        <div class="mt-3">
+          <small class="text-muted">각종 서비스를 이용하시려면  로그인이 필요합니다.</small>
+        </div>
+      </div>
+
+      <div th:if="${user != null}" class="profile-section">
+        <div class="d-flex align-items-center mb-3">
+          <span class="material-symbols-rounded">person</span>
+          <span class="profile-header ml-2" th:text="${user.username} + '님, 환영합니다.'"></span>
+        </div>
+        <div class="profile-info">
+          <table class="table">
+            <tr>
+              <td>이메일</td>
+              <td th:text="${user.email}"></td>
+            </tr>
+            <tr>
+              <td>소속</td>
+              <td th:text="${user.department}"></td>
+            </tr>
+            <tr>
+              <td>레벨</td>
+              <td th:text="${user.level}"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="profile-buttons">
+          <a href="/userInfo" class="btn btn-primary">마이페이지</a>
+          <a href="/logout" class="btn btn-secondary">로그아웃</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- 푸터 -->
+<footer class="footer">
+  <div class ="container2">
+  COPYRIGHT(C) 2024 Apocalyptic Exit ALL RIGHTS RESERVED.
+  </div>
+</footer>
+
+<!-- 스크립트 -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

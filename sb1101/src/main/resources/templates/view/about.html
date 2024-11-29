@@ -1,0 +1,55 @@
+<!-- about.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>소개</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    html {
+      transform: scale(1);
+      transform-origin: 0 0;
+    }
+    body {
+      background-color: #121212;
+      color: white;
+    }
+    .about-section {
+      background-image: url('/images/dark_fantasy_bg.jpg');
+      background-size: cover;
+      background-position: center;
+      padding: 80px 0;
+    }
+    .about-content {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 40px;
+      border-radius: 10px;
+    }
+    h1, h3 {
+      font-family: 'Creepster', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 헤더 포함 -->
+<div th:replace="layout/header :: header"></div>
+
+<div class="about-section">
+  <div class="container">
+    <div class="about-content">
+      <h1 class="text-center">아포칼립스: 어반 판타지</h1>
+      <p class="lead">어두운 도시 속, 끝없는 전투와 미스터리의 세계가 펼쳐집니다. 당신은 이 세계의 영웅이 될 준비가 되셨습니까?</p>
+      <p>거대한 전쟁과 신비한 존재들, 그리고 파괴된 세상의 잔재들이 얽힌 이 도시에서, 각자의 운명을 따라 싸우는 이들이 있습니다. 이제, 이 혼돈 속에서 살아남기 위해 반드시 승리를 거둬야만 합니다.</p>
+      <h3>게임의 세계</h3>
+      <p>도시의 중심부는 어둡고 위험한 신비로 가득 차 있습니다. 수많은 세력이 충돌하며, 살아남은 이들은 고독하게 자신만의 길을 가고 있습니다. 하지만, 이 모든 전투는 단순한 생존을 넘어, 전 세계의 운명을 좌우하는 중요한 싸움입니다.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

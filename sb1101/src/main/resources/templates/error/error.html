@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Error</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background: url('/images/fnotice_image2.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .error-container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 800px;  /* 너비 증가 */
+      margin: 0 auto;
+    }
+
+    .error-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #ff4444;  /* 에러 제목 색상 */
+    }
+
+    .error-message {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .error-details {
+      text-align: left;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 5px;
+      margin: 1rem 0;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .error-status {
+      font-size: 1.1rem;
+      color: #ffd700;  /* 상태 코드 색상 */
+      margin-bottom: 1rem;
+    }
+
+    .back-button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+      display: inline-block;
+      margin-top: 1rem;
+    }
+
+    .back-button:hover {
+      background-color: #0056b3;
+      color: white;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<div class="error-container">
+  <h1 class="error-title">오류가 발생했습니다</h1>
+
+  <!-- 상태 코드 표시 -->
+  <div class="error-status" th:if="${status}">
+    에러 코드: <span th:text="${status}"></span>
+  </div>
+
+  <!-- 기본 에러 메시지 -->
+  <p class="error-message" th:if="${error}" th:text="${error}">오류 메시지</p>
+  <p class="error-message" th:unless="${error}">요청을 처리하는 중에 문제가 발생했습니다.</p>
+
+  <!-- 상세 에러 정보 -->
+  <div class="error-details" th:if="${exception}">
+    <strong>에러 타입:</strong> <span th:text="${exception.getClass().getName()}"></span><br>
+    <strong>에러 메시지:</strong> <span th:text="${exception.getMessage()}"></span>
+  </div>
+
+  <!-- 스택 트레이스 (개발 환경에서만 표시) -->
+  <div class="error-details" th:if="${trace}">
+    <strong>스택 트레이스:</strong><br>
+    <span th:text="${trace}"></span>
+  </div>
+
+  <!-- 요청 정보 -->
+  <div class="error-details" th:if="${path}">
+    <strong>요청 URL:</strong> <span th:text="${path}"></span>
+  </div>
+
+  <a href="javascript:history.back()" class="back-button">이전 페이지로 돌아가기</a>
+</div>
+</body>
+</html>

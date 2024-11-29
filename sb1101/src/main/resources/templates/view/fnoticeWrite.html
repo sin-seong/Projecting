@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 등록</title>
+  <!-- 부트스트랩 4.5.2 CDN 링크 -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- 사용자 정의 CSS (선택사항) -->
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+  <style>
+
+    body {
+      background: url('/images/fnotice_image4.jpg') no-repeat center center fixed;
+      background-size: cover; /* 이미지를 화면에 꽉 차게 설정 */
+      color: white; /* 텍스트 색을 흰색으로 설정 */
+      font-family: Arial, sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+    .form-control{
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+    .btn{
+      background: #131e32;
+      border: none
+
+    }/* 별이 빛나는 효과 */
+    .stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 0; /* 별이 페이지의 배경으로 보이게 설정 */
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background-color: white;
+      border-radius: 50%;
+      animation: twinkle 1.5s infinite ease-in-out;
+    }
+
+    /* 별들이 반짝이는 애니메이션 */
+    @keyframes twinkle {
+      0% {
+        opacity: 0.2;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.2;
+      }
+    }
+
+    /* 별을 무작위 위치에 배치 */
+    .star:nth-child(odd) {
+      animation-duration: 2s;
+    }
+    .star:nth-child(even) {
+      animation-duration: 1.5s;
+    }
+
+  </style>
+</head>
+<body>
+<div class="stars">
+  <!-- 30개의 별을 랜덤 위치로 배치 -->
+  <div class="star" style="top: 5%; left: 12%;"></div>
+  <div class="star" style="top: 8%; left: 28%;"></div>
+  <div class="star" style="top: 12%; left: 35%;"></div>
+  <div class="star" style="top: 15%; left: 60%;"></div>
+  <div class="star" style="top: 18%; left: 75%;"></div>
+  <div class="star" style="top: 20%; left: 85%;"></div>
+  <div class="star" style="top: 25%; left: 10%;"></div>
+  <div class="star" style="top: 30%; left: 40%;"></div>
+  <div class="star" style="top: 35%; left: 50%;"></div>
+  <div class="star" style="top: 40%; left: 5%;"></div>
+  <div class="star" style="top: 45%; left: 60%;"></div>
+  <div class="star" style="top: 50%; left: 30%;"></div>
+  <div class="star" style="top: 55%; left: 70%;"></div>
+  <div class="star" style="top: 60%; left: 80%;"></div>
+  <div class="star" style="top: 65%; left: 15%;"></div>
+  <div class="star" style="top: 70%; left: 90%;"></div>
+  <div class="star" style="top: 75%; left: 25%;"></div>
+  <div class="star" style="top: 80%; left: 50%;"></div>
+  <div class="star" style="top: 85%; left: 65%;"></div>
+  <div class="star" style="top: 90%; left: 20%;"></div>
+  <div class="star" style="top: 92%; left: 45%;"></div>
+  <div class="star" style="top: 95%; left: 80%;"></div>
+  <div class="star" style="top: 2%; left: 95%;"></div>
+  <div class="star" style="top: 7%; left: 50%;"></div>
+  <div class="star" style="top: 13%; left: 60%;"></div>
+  <div class="star" style="top: 18%; left: 10%;"></div>
+  <div class="star" style="top: 23%; left: 80%;"></div>
+  <div class="star" style="top: 28%; left: 33%;"></div>
+</div>
+<!-- 헤더 포함 (레이아웃) -->
+<div th:replace="layout/header :: header"></div>
+
+<div class="container mt-4">
+  <h2>게시글 등록</h2>
+  <!-- 게시글 등록 폼 -->
+  <form id="frm" name="frm" method="post" action="/fnInsert">
+    <div class="form-group">
+      <!-- 제목 입력 필드 -->
+      <label for="title">제목</label>
+      <input type="text" id="title" name="title" class="form-control" placeholder="게시글 제목을 입력하세요" required>
+    </div>
+
+    <div class="form-group">
+      <!-- 내용 입력 필드 -->
+      <label for="content">내용</label>
+      <textarea id="content" name="content" class="form-control" rows="5" placeholder="게시글 내용을 입력하세요" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="department">소속</label>
+      <select class="form-control" id="department" name="department" required>
+        <option value="엘도라르 숲">엘도라르 숲</option>
+        <option value="로이셰르 왕국">로이셰르 왕국</option>
+        <option value="크래스탄 산맥">크래스탄 산맥</option>
+      </select>
+    </div>
+
+
+    <!-- 저장 버튼 -->
+    <button type="submit" id="submit" class="btn btn-primary">저장</button>
+  </form>
+</div>
+
+<!-- 부트스트랩 JS, Popper.js, jQuery (옵션으로 필요 시 추가) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

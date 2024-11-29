@@ -1,0 +1,50 @@
+<style>
+    body.game-active {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
+    
+    #gameCanvas {
+        touch-action: none;  /* 모바일에서 스크롤 방지 */
+    }
+    
+    #autoAttackIcon {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        width: 40px;
+        height: 40px;
+        background-color: #333;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        user-select: none;
+        transition: background-color 0.3s;
+    }
+
+    #autoAttackIcon.active {
+        background-color: #ff0000;
+    }
+</style>
+
+<script>
+    // 게임 시작시 body에 클래스 추가
+    function startGame() {
+        document.body.classList.add('game-active');
+        // ... 기존 startGame 코드
+    }
+    
+    // 게임 종료시 클래스 제거
+    function endGame() {
+        document.body.classList.remove('game-active');
+        // ... 게임 종료 코드
+    }
+</script> 
+
+<div id="autoAttackIcon">A</div> 

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steam Real-Time Stats</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #gameStats {
+      margin-top: 20px;
+    }
+    .game {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<h1>Real-Time Steam Game Stats</h1>
+<div id="gameStats">Loading...</div>
+
+<script>
+  async function fetchGameStats() {
+    const response = await fetch('http://localhost:3000/getSteamCharts', {
+      method: 'GET',
+      headers: {
+        'Cache-Control': 'no-cache',  // 캐시를 무시하도록 요청
+      },
+    });
+    const data = await response.json();  // JSON 형식으로 응답받기
+
+    const statsContainer = document.getElementById('gameStats');
+    statsContainer.innerHTML = '';  // 초기화
+
+    // 각 게임의 데이터 출력
+    data.forEach(game => {
+      statsContainer.innerHTML += `
+      <div class="game">
+        <strong>${game.title}</strong> - ${game.players} players
+      </div>
+    `;
+    });
+  }
+
+
+  // 페이지 로드 시 데이터 가져오기
+  fetchGameStats();
+
+  // 30초마다 데이터를 갱신
+  setInterval(fetchGameStats, 30000);
+</script>
+</body>
+</html>

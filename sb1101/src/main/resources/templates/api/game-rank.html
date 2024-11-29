@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게임 순위</title>
+  <script>
+    async function fetchGameRankings() {
+      const response = await fetch('/game-rankings');
+      const data = await response.json();
+
+      const listElement = document.getElementById('game-rankings-list');
+      listElement.innerHTML = '';
+
+      data.forEach(game => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Title: ${game.title}, Developer: ${game.developer}`;
+        listElement.appendChild(listItem);
+      });
+    }
+
+    window.onload = fetchGameRankings;
+  </script>
+</head>
+<body>
+<h1>네이버 게임 순위</h1>
+<ul id="game-rankings-list">
+  <!-- 게임 순위 항목이 여기에 동적으로 추가됩니다 -->
+</ul>
+</body>
+</html>

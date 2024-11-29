@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>게임 기록판</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: url('/images/from_game.jpg') no-repeat center center fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="layout/header :: header"></div>
+<h1>게임 기록판</h1>
+
+<h2>Top 10 Scores</h2>
+<table>
+    <thead>
+    <tr>
+        <th>순위</th>
+        <th>사용자</th>
+        <th>점수</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="score : ${topScores}">
+        <td th:text="${loop.index + 1}"></td>
+        <td th:text="${score.username}"></td>
+        <td th:text="${score.score}"></td>
+    </tr>
+    </tbody>
+</table>
+<button class="backButton" onclick="window.location.href='/game2'">게임으로 돌아가기</button>
+
+<script>
+    // 순위 데이터를 서버에서 가져오는 함수
+    function fetchRankData() {
+        fetch('/rankData')  // 서버의 순위 데이터를 가져오는 API (예시)
+            .then(response => response.json())
+            .then(data => {
+                const rankList = document.getElementById('rankList');
+                data.forEach((rank, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+              <td>${index + 1}</td>
+              <td>${rank.nickname}</td>
+              <td>${rank.score}</td>
+            `;
+                    rankList.appendChild(row);
+                });
+            })
+            .catch(error => console.error('순위 데이터 로드 실패:', error));
+    }
+
+    // 페이지 로드 시 순위 데이터 불러오기
+    window.onload = function() {
+        fetchRankData();
+    };
+</script>
+</body>
+</html>

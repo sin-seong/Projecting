@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사용자 수정</title>
+    <!-- Bootstrap 4 CDN -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="layout/header :: header"></div>
+
+<div class="container">
+    <h1 class="my-4">사용자 수정</h1>
+
+    <form th:action="@{/updateUser/{id}(id=${sign.id})}" method="post">
+        <div class="form-group">
+            <label for="username">이름</label>
+            <input type="text" id="username" class="form-control" name="username" th:value="${sign.username}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="email" id="email" class="form-control" name="email" th:value="${sign.email}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">비밀번호</label>
+            <input type="password" id="password" class="form-control" name="password" th:value="${sign.password}" required>
+        </div>
+
+        <!-- 소속 (Department) 수정 부분 -->
+        <div class="form-group">
+            <label for="department">소속</label>
+            <select class="form-control" id="department" name="department">
+                <option value="엘도라르 숲" th:selected="${sign.department == '엘도라르 숲'}">엘도라르 숲</option>
+                <option value="로이셰르 왕국" th:selected="${sign.department == '로이셰르 왕국'}">로이셰르 왕국</option>
+                <option value="크래스탄 산맥" th:selected="${sign.department == '크래스탄 산맥'}">크래스탄 산맥</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="level">레벨</label>
+            <input type="number" id="level" class="form-control" name="level" th:value="${sign.level}" required>
+        </div>
+        <div class="form-group">
+            <label for="role">역할</label>
+            <select id="role" class="form-control" name="role">
+                <option value="admin" th:selected="${sign.role == 'admin'}">관리자</option>
+                <option value="user" th:selected="${sign.role == 'user'}">일반 사용자</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">수정하기</button>
+        <a href="/userProfile" class="btn btn-secondary">취소</a>
+    </form>
+</div>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

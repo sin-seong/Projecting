@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>RPG Game</title>
+    <style>
+        body.game-active{
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+        #gameCanvas{
+            touch-action: none;;
+        }
+        .game-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        #gameContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        canvas {
+            border: 2px solid black;
+            background-color: #4a752c;
+            margin-bottom: 10px;
+        }
+        
+        #statsPanel {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .controls {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 200px;
+            height: fit-content;
+            margin-top: 0;
+        }
+        
+        .controls h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        
+        .controls ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .controls li {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .key {
+            background-color: #3498db;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        #autoAttackIcon {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            user-select: none;
+            transition: background-color 0.3s;
+        }
+
+        #autoAttackIcon.active {
+            background-color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="layout/header :: header"></div>
+
+    <div class="game-wrapper">
+        <div id="gameContainer">
+            <canvas id="gameCanvas"></canvas>
+            <img id="characterImage" src="/images/character2.png" style="display: none;">
+            <div id="statsPanel">
+                레벨: <span id="level">1</span> |
+                HP: <span id="hp">100</span>/<span id="maxHp">100</span> |
+                경험치: <span id="exp">0</span>/<span id="maxExp">100</span> |
+                공격력: <span id="attack">20</span> |
+                공격속도: <span id="attackSpeed">1.0</span>초 |
+                이동속도: <span id="speed">5</span> |
+                공격범위: <span id="range">50</span> |
+                처치: <span id="killCount">0</span> |
+                보스처치: <span id="bossKillCount">0</span> |
+                몬스터강화: <span id="monsterPower">1.0</span>배
+            </div>
+            <button id="startButton">게임 시작</button>
+        </div>
+        <div class="controls">
+            <h3>조작법</h3>
+            <ul>
+                <li><span
+                        class="key">↑</span>
+                    위로 이동</li>
+                <li><span
+                        class="key">↓</span>
+                    아래로 이동</li>
+                <li><span
+                        class="key">←</span>
+                    왼쪽으로 이동</li>
+                <li><span
+                        class="key">→</span>
+                    오른쪽으로 이동</li>
+                <li><span
+                        class="key">A</span>
+                    자동공격(홀드)</li>
+                <li><span
+                        class="key">spece-Bar</span>
+                    공격키</li>
+            </ul>
+
+    </div>
+    <script src="/js/rpg.js"></script>
+<!--<script>-->
+<!--    function startGame(){-->
+<!--        document.body.classList.add('game-active');-->
+<!--    }-->
+<!--    function endGame() {-->
+<!--        document.body.classList.remove('game-active');-->
+<!--    }-->
+<!--</script>-->
+</body>
+</html>

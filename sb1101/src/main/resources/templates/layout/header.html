@@ -1,0 +1,206 @@
+<header class="text-white p-4 d-flex align-items-center" style="background-color: black; position: relative;">
+  <div class="me-3" style="position: relative; z-index: 2;">
+    <a href="/"><img class="logo" alt="게임 사이트 로고" src="/images/logo.png" style="max-width: 150px;"></a>
+  </div>
+  <nav class="navbar navbar-expand-lg" style="background-color: black;">
+    <div class="container" style="background-color: #0000 !important;">
+      <nav class="ms-auto">
+        <ul class="nav">
+
+          <li class="nav-item"><a class="nav-link text-white" th:href="@{/main}">홈</a></li>
+          <li class="nav-item"><a class="nav-link text-white" th:href="@{/notices}">공지사항</a></li>
+          <li class="nav-item"><a class="nav-link text-white" th:href="@{/games}">게임 목록</a></li>
+          <li class="nav-item"><a class="nav-link text-white" th:href="@{/news}">게임 뉴스</a></li>
+          <li class="nav-item"><a class="nav-link text-white" th:href="@{/about}">소개</a></li>
+          <li class="nav-item"><a class="nav-link text-white" th:href="@{/fnotice}">게시판</a></li>
+          <li class="nav-item"><a class="nav-link text-white" th:href="@{/gamelist}">게임추천 리스트</a></li>
+          <li class="nav-item"><a class="nav-link text-white" th:href="@{/userInfo}" th:if="${session.user != null}">마이페이지</a></li>
+          <li class="nav-item" th:if="${role == 'admin'}"><a class="nav-link text-white" th:href="@{/adminCenter}">관리자 센터</a></li>
+          <!-- header.html -->
+          <li class="nav-item dropdown" th:if="${session.user != null}">
+            <style>
+              .notification-wrapper {
+                position: relative;
+                display: inline-block;
+              }
+
+              .notification-dropdown {
+                position: fixed;  /* absolute 대신 fixed 사용 */
+                top: 60px;       /* 헤더 높이에 맞춰 조정 */
+                right: 20px;     /* 오른쪽 여백 */
+                width: 350px;
+                max-height: 80vh; /* 화면 높이의 80%로 제한 */
+                overflow-y: auto;
+                background-color: white;
+                border: 1px solid rgba(0,0,0,.15);
+                border-radius: 4px;
+                box-shadow: 0 6px 12px rgba(0,0,0,.175);
+                z-index: 100000;  /* 매우 높은 z-index 값 */
+                display: none;
+                margin-top: 5px;
+              }
+              .notification-badge {
+                position: absolute;
+                top: 0;
+                right: -10px;
+                padding: 3px 6px;
+                font-size: 12px;
+                background-color: #dc3545 !important;  /* 빨간색으로 강제 지정 */
+                color: white !important;  /* 글자색 흰색으로 강제 지정 */
+                border-radius: 10px;
+                min-width: 20px;
+                text-align: center;
+                font-weight: bold;  /* 글자 굵기 추가 */
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);  /* 그림자 효과 */
+              }
+
+              /* Bootstrap의 기본 배경색 오버라이드 */
+              .badge-danger {
+                background-color: #dc3545 !important;
+                color: white !important;
+              }
+
+              .notification-dropdown.show {
+                display: block !important;
+              }
+
+              .notification-item {
+                padding: 10px 15px;
+                border-bottom: 1px solid #eee;
+                color: #333;
+                cursor: pointer;
+                white-space: normal;
+                background-color: white;  /* 배경색 명시적 지정 */
+              }
+
+              .notification-item:hover {
+                background-color: #f8f9fa;
+              }
+
+              /* 스크롤바 스타일링 */
+              .notification-dropdown::-webkit-scrollbar {
+                width: 6px;
+              }
+
+              .notification-dropdown::-webkit-scrollbar-track {
+                background: #f1f1f1;
+              }
+
+              .notification-dropdown::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 3px;
+              }
+
+              .notification-dropdown::-webkit-scrollbar-thumb:hover {
+                background: #555;
+              }
+
+              /* 네비게이션 바 스타일 */
+              .navbar {
+                position: relative;
+                z-index: 1000;
+              }
+
+              /* 컨테이너 스타일 */
+              .container {
+                position: relative;
+              }
+            </style>
+
+            <div class="notification-wrapper">
+              <a class="nav-link text-white" href="#" onclick="toggleNotifications(event)">
+                알림
+                <span class="notification-badge" th:if="${unreadCount > 0}" th:text="${unreadCount}"></span>
+              </a>
+              <div id="notificationDropdown" class="notification-dropdown">
+                <div th:if="${notifications != null and !notifications.empty}"
+                     th:each="notification : ${notifications}"
+                     class="notification-item"
+                     th:data-id="${notification.id}"
+                     th:data-link="${notification.link}"
+                     onclick="handleNotification(this)">
+                  <div th:text="${notification.message}"></div>
+                  <small class="text-muted"
+                         th:text="${#temporals.format(notification.createdAt, 'yyyy-MM-dd HH:mm')}">
+                  </small>
+                </div>
+                <div th:if="${notifications == null or notifications.empty}"
+                     class="notification-item">
+                  새로운 알림이 없습니다.
+                </div>
+              </div>
+            </div>
+
+            <script>
+              function toggleNotifications(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                const dropdown = document.getElementById('notificationDropdown');
+                dropdown.classList.toggle('show');
+              }
+
+              async function handleNotification(element) {
+                try {
+                  const notificationId = element.getAttribute('data-id');
+                  const link = element.getAttribute('data-link');
+
+                  console.log('알림 처리 시작:', { notificationId, link }); // 디버깅용
+
+                  const response = await fetch(`/notifications/${notificationId}/read`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Accept': 'application/json'
+                    },
+                    credentials: 'same-origin'  // 쿠키 포함
+                  });
+
+                  console.log('서버 응답:', response); // 디버깅용
+
+                  if (response.ok) {
+                    // 알림 뱃지 업데이트
+                    const badge = document.querySelector('.notification-badge');
+                    const currentCount = parseInt(badge?.textContent || '0');
+
+                    console.log('현재 알림 수:', currentCount); // 디버깅용
+
+                    if (currentCount <= 1) {
+                      badge?.remove();
+                    } else if (badge) {
+                      badge.textContent = currentCount - 1;
+                    }
+
+                    // 알림 항목 제거
+                    element.remove();
+
+                    // 빈 알림 체크 및 메시지 표시
+                    const dropdown = document.getElementById('notificationDropdown');
+                    const remainingItems = dropdown.querySelectorAll('.notification-item:not(.empty-message)');
+
+                    if (remainingItems.length === 0) {
+                      dropdown.innerHTML = '<div class="notification-item empty-message">새로운 알림이 없습니다.</div>';
+                    }
+
+                    // 드롭다운 닫기
+                    dropdown.classList.remove('show');
+
+                    // 약간의 지연 후 페이지 이동 (UI 업데이트가 보이도록)
+                    if (link) {
+                      setTimeout(() => {
+                        window.location.href = link;
+                      }, 100);
+                    }
+                  } else {
+                    console.error('알림 처리 실패:', await response.text());
+                  }
+                } catch (error) {
+                  console.error('알림 처리 중 오류:', error);
+                }
+              }
+            </script>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </nav>
+</header>

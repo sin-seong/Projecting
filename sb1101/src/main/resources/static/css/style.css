@@ -1,0 +1,88 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%; /* 화면 크기 맞추기 */
+	width: 100%;
+	overflow-x: hidden; /* 수평 스크롤 제거 */
+}
+
+/* 페이지 배경 설정 */
+body {
+	/*background: url('/images/dack-forest.jpg') no-repeat center center fixed;*/
+	background-size: cover; /* 이미지를 화면에 꽉 차게 설정 */
+	color: white; /* 텍스트 색을 흰색으로 설정 */
+	font-family: Arial, sans-serif;
+	position: relative;
+	overflow: hidden; /* 화면 밖으로 나가는 요소들 숨김 */
+}
+
+/* 비 내리는 효과 */
+.rain {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+
+/* 비방울을 만들기 위한 스타일 */
+.rain-drop {
+	position: absolute;
+	background: rgba(255, 255, 255, 0.5); /* 흰색으로 설정 */
+	border-radius: 50%; /* 원형으로 설정 */
+	width: 5px; /* 물방울 크기 */
+	height: 10px; /* 물방울 높이 */
+	animation: fall 1s linear infinite; /* 물방울이 떨어지는 애니메이션 */
+}
+
+/* 애니메이션: 물방울이 떨어지도록 설정 */
+@keyframes fall {
+	0% {
+		transform: translateY(-20px); /* 시작 위치 */
+	}
+	100% {
+		transform: translateY(100vh); /* 끝 위치 */
+	}
+}
+
+/* 카드 스타일 */
+.notice-card {
+	position: relative;
+	z-index: 2; /* 배경과 비 내리는 효과보다 위에 배치 */
+	background-color: rgba(0, 0, 0, 0.7); /* 카드 배경을 반투명하게 설정 */
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+	margin-top: 50px;
+}
+
+.notice-card h3 {
+	color: #ffffff; /* 제목을 노란색으로 강조 */
+}
+.notice-card h4{
+	color: #c89f9f;
+}
+
+.notice-card p {
+	font-size: 1.2em;
+}
+
+.notice-card a {
+	margin-top: 20px;
+}
+
+/* 페이지 내용 */
+.container {
+	z-index: 3; /* 카드가 배경이나 비 내리는 효과보다 위에 오도록 설정 */
+	position: relative;
+}
+th {
+	background-color: white;
+	color: black; /* 헤더 텍스트는 검은색 */
+}
+
+/* 테이블 바디의 배경을 검은색으로 설정 */
+tbody {
+	background-color: rgba(255, 255, 255, 0.7);
+}
